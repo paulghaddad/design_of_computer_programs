@@ -8,6 +8,6 @@ def poker(hands):
     ranks = card_ranks(hand)
     # Check if it's a straight flush
     if straight(ranks) and flush(ranks):
-        return 8 # there are 9 possible levels of poker hands, so return 0-8
+        return (8, max(ranks))
     elif kind(4, ranks):
-        return 7
+        return (7, kind(4, ranks), kind(1, ranks))
