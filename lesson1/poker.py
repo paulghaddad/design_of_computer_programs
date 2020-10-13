@@ -4,10 +4,22 @@ def poker(hands):
 
   def hand_rank(hand):
     "Return a value indicating the ranking of a hand."
-    # Extract ranks from the hand  
     ranks = card_ranks(hand)
-    # Check if it's a straight flush
-    if straight(ranks) and flush(ranks):
+    if straight(ranks) and flush(ranks):            # Straight flush
         return (8, max(ranks))
-    elif kind(4, ranks):
+    elif kind(4, ranks):                            # Four of a kind
         return (7, kind(4, ranks), kind(1, ranks))
+    elif kind(3, ranks) and kind(2, ranks):         # Full House
+        return (6, kind(3, ranks), kind(2, ranks))
+    elif flush(ranks):                              # Flush
+        return (6, kind(3, ranks), kind(2, ranks))
+    elif straight(ranks):                           # Straight
+        return (4, max(ranks))
+    elif kind(3, ranks):                            # 3 of a kind
+        return (3, kind(3, ranks), ranks)
+    elif two_pair(ranks):                           # 2 pair
+        return (2, two_pair(ranks), ranks)
+    elif kind(2, ranks):                            # kind
+        return (1, kind(2, ranks), ranks)
+    else:                                           # high card
+        return (0, ranks)
