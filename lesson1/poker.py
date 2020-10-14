@@ -2,7 +2,7 @@ def poker(hands):
     "Return the best hand: poker([hand,...]) => hand"
     return max(hands, key=hand_rank)
 
-  def hand_rank(hand):
+def hand_rank(hand):
     "Return a value indicating the ranking of a hand."
     ranks = card_ranks(hand)
     if straight(ranks) and flush(ranks):            # Straight flush
@@ -31,3 +31,12 @@ def card_ranks(cards):
     ranks = [CARD_RANKS.index(r) for r, s in cards]
     ranks.sort(reverse=True)
     return ranks
+
+def straight(ranks):
+    high = max(ranks)
+    low = min(ranks)
+
+    return ranks == [rank for rank in range(high, low-1, -1)]
+
+def flush(hand):
+    return len({suit for rank,suit in hand}) == 1
