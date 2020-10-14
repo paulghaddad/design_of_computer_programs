@@ -23,3 +23,11 @@ def poker(hands):
         return (1, kind(2, ranks), ranks)
     else:                                           # high card
         return (0, ranks)
+
+CARD_RANKS = '--23456789TJQKA'
+
+def card_ranks(cards):
+    "Return a list of the ranks, sorted with higher first."
+    ranks = [CARD_RANKS.index(r) for r, s in cards]
+    ranks.sort(reverse=True)
+    return ranks
