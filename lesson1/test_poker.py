@@ -19,3 +19,7 @@ def test_poker():
     assert hand_rank(sf) == (8, 10)
     assert hand_rank(fk) == (7, 9, 7)
     assert hand_rank(fh) == (6, 10, 7)
+
+    assert card_ranks(sf)  == [10, 9, 8, 7, 6]
+    assert card_ranks(fk)  == [9, 9, 9, 9, 7]
+    assert card_ranks(fh)  == [10, 10, 10, 7, 7]
