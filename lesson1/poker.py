@@ -33,6 +33,9 @@ def card_ranks(cards):
     "Return a list of the ranks, sorted with higher first."
     ranks = [CARD_RANKS.index(r) for r, s in cards]
     ranks.sort(reverse=True)
+
+    if ranks == [14, 5, 4, 3, 2]:
+        return [5, 4, 3, 2, 1]
     return ranks
 
 def straight(ranks):
