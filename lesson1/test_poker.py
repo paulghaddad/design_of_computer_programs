@@ -19,6 +19,11 @@ def test_poker():
     assert poker([fh]) == fh
     assert poker(100 * [fh]) == fh
 
+def test_poker_with_ties():
+    sf1 = "6C 7C 8C 9C TC".split()
+    sf2 = "6D 7D 8D 9D TD".split()
+    assert poker([sf1, sf2, fk, fh]) == [sf1, sf2]
+
 
 @pytest.mark.skip()
 def test_hand_rank():

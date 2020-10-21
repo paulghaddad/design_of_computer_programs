@@ -2,19 +2,38 @@ from collections import Counter
 
 
 def poker(hands):
-    "Return the best hand: poker([hand,...]) => hand"
-    return max(hands, key=hand_rank)
+    "Return a list of winning hands: poker([hand,...]) => [hand, hand,...]"
+    # max_rank = hand_rank(max(hands, key=hand_rank))
+    # return [hand for hand in hands if hand_rank(hand) == max_rank]
+    return allmax(hands, key=hand_rank)
+
+def allmax(iterable, key=None):
+    "Return a list of all items equal to the max of the iterable."
+    # max_val = key(max(iterable, key=key))
+    # return [el for el in iterable if key(el) == max_val]
+    max_results, cur_max = [], None
+    key = key or (lambda el: el)
+
+    for val in iterable:
+        cur_val = key(val)
+        if not max_results or cur_val > cur_max:
+            max_results, cur_max = [val], cur_val
+        elif cur_val == cur_max:
+            max_results.append(val)
+
+    return max_results
+
 
 def hand_rank(hand):
     "Return a value indicating the ranking of a hand."
     ranks = card_ranks(hand)
-    if straight(ranks) and flush(ranks):            # Straight flush
+    if straight(ranks) and flush(hand):            # Straight flush
         return (8, max(ranks))
     elif kind(4, ranks):                            # Four of a kind
         return (7, kind(4, ranks), kind(1, ranks))
     elif kind(3, ranks) and kind(2, ranks):         # Full House
         return (6, kind(3, ranks), kind(2, ranks))
-    elif flush(ranks):                              # Flush
+    elif flush(hand):                              # Flush
         return (6, kind(3, ranks), kind(2, ranks))
     elif straight(ranks):                           # Straight
         return (4, max(ranks))
