@@ -54,3 +54,18 @@ def kind(n, ranks):
             return rank
 
     return None
+
+def two_pair(ranks):
+    """If there are two pair, return the two ranks as a
+       tuple: (highest, lowest); otherwise return None."""
+    counts = Counter(ranks)
+    pairs = []
+
+    for rank, count in counts.items():
+        if count == 2:
+            pairs.append(rank)
+
+    if len(pairs) == 2:
+        return tuple(sorted(pairs, reverse=True))
+
+    return None

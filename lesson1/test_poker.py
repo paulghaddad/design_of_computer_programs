@@ -1,6 +1,6 @@
 import pytest
 
-from poker import poker, card_ranks, straight, flush, kind
+from poker import poker, card_ranks, straight, flush, kind, two_pair
 
 sf = "6C 7C 8C 9C TC".split() # => ['6C', '7C', '8C', '9C', 'TC']
 fk = "9D 9H 9S 9C 7D".split()
@@ -47,3 +47,10 @@ def test_kind():
     assert kind(3, fkranks) == None
     assert kind(2, fkranks) == None
     assert kind(1, fkranks) == 7
+
+
+def test_two_pair():
+    fkranks = card_ranks(fk)
+    tpranks = card_ranks(tp)
+    assert two_pair(tpranks) == (9, 5)
+    assert two_pair(fkranks) == None
