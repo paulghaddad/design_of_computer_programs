@@ -1,10 +1,11 @@
 import pytest
 
-from poker import poker, card_ranks, straight, flush
+from poker import poker, card_ranks, straight, flush, kind
 
 sf = "6C 7C 8C 9C TC".split() # => ['6C', '7C', '8C', '9C', 'TC']
 fk = "9D 9H 9S 9C 7D".split()
 fh = "TD TC TH 7C 7D".split()
+tp = "5S 5D 9H 9C 6S".split()
 
 @pytest.mark.skip()
 def test_poker():
@@ -38,3 +39,11 @@ def test_straight():
 def test_flush():
     assert flush(sf) == True
     assert flush(fk) == False
+
+def test_kind():
+    fkranks = card_ranks(fk)
+    tpranks = card_ranks(tp)
+    assert kind(4, fkranks) == 9
+    assert kind(3, fkranks) == None
+    assert kind(2, fkranks) == None
+    assert kind(1, fkranks) == 7

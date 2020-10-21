@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 def poker(hands):
     "Return the best hand: poker([hand,...]) => hand"
     return max(hands, key=hand_rank)
@@ -40,3 +43,14 @@ def straight(ranks):
 
 def flush(hand):
     return len({suit for rank,suit in hand}) == 1
+
+def kind(n, ranks):
+    """
+    Return the first rank that this hand has exactly n of.
+    Return None if there is no n-of-a-kind in the hand.
+    """
+    for rank, count in Counter(ranks).items():
+        if count == n:
+            return rank
+
+    return None
