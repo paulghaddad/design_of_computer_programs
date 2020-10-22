@@ -1,4 +1,5 @@
 from collections import Counter
+import random
 
 
 def poker(hands):
@@ -6,6 +7,11 @@ def poker(hands):
     # max_rank = hand_rank(max(hands, key=hand_rank))
     # return [hand for hand in hands if hand_rank(hand) == max_rank]
     return allmax(hands, key=hand_rank)
+
+def deal(numhands, n=5, deck=[r+s for r in '23456789TJQKA' for s in 'SHDC']):
+    "Shuffle the deck and deal out numhands n=card hands"
+    random.shuffle(deck)
+    return [deck[n*i:n*(i+1)] for i in range(numhands)]
 
 def allmax(iterable, key=None):
     "Return a list of all items equal to the max of the iterable."
