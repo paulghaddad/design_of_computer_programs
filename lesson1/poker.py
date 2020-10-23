@@ -2,6 +2,9 @@ from collections import Counter
 import random
 
 
+CARD_RANKS = '--23456789TJQKA'
+
+
 def poker(hands):
     "Return a list of winning hands: poker([hand,...]) => [hand, hand,...]"
     # max_rank = hand_rank(max(hands, key=hand_rank))
@@ -32,27 +35,25 @@ def allmax(iterable, key=None):
 
 def hand_rank(hand):
     "Return a value indicating the ranking of a hand."
-    ranks = card_ranks(hand)
-    if straight(ranks) and flush(hand):            # Straight flush
-        return (8, max(ranks))
-    elif kind(4, ranks):                            # Four of a kind
-        return (7, kind(4, ranks), kind(1, ranks))
-    elif kind(3, ranks) and kind(2, ranks):         # Full House
-        return (6, kind(3, ranks), kind(2, ranks))
-    elif flush(hand):                              # Flush
-        return (6, kind(3, ranks), kind(2, ranks))
-    elif straight(ranks):                           # Straight
-        return (4, max(ranks))
-    elif kind(3, ranks):                            # 3 of a kind
-        return (3, kind(3, ranks), ranks)
-    elif two_pair(ranks):                           # 2 pair
-        return (2, two_pair(ranks), ranks)
-    elif kind(2, ranks):                            # kind
-        return (1, kind(2, ranks), ranks)
-    else:                                           # high card
-        return (0, ranks)
+    groups = group([CARD_RANKS.index(r) for r,s in hand])
+    counts, ranks = unzip(groups)
 
-CARD_RANKS = '--23456789TJQKA'
+    if ranks == (14, 5, 4, 3, 2):
+        ranks = (5, 4, 3, 2, 1)
+    straight = len(ranks) == 5 and max(ranks)-min(ranks) == 4
+    flush = len(set([s for r,s in hand])) == 1
+
+    return (9 if (5,) == counts else
+            8 if straight and flush else
+            7 if (4, 1) == counts else
+            6 if (3, 2) == counts else
+            5 if flush else
+            4 if straight else
+            3 if (3, 1, 1) == counts else
+            2 if (2, 2, 1) == counts else
+            1 if (2, 1, 1, 1) == counts
+            else 0), ranks
+
 
 def card_ranks(cards):
     "Return a list of the ranks, sorted with higher first."
@@ -63,37 +64,12 @@ def card_ranks(cards):
         return [5, 4, 3, 2, 1]
     return ranks
 
-def straight(ranks):
-    high = max(ranks)
-    low = min(ranks)
+def group(items):
+    """Return a list of [(count, x)...], highest count first, then highest x
+    first."""
+    groups = [(items.count(x), x) for x in set(items)]
+    return sorted(groups, reverse=True)
 
-    return ranks == [rank for rank in range(high, low-1, -1)]
 
-def flush(hand):
-    return len({suit for rank,suit in hand}) == 1
-
-def kind(n, ranks):
-    """
-    Return the first rank that this hand has exactly n of.
-    Return None if there is no n-of-a-kind in the hand.
-    """
-    for rank, count in Counter(ranks).items():
-        if count == n:
-            return rank
-
-    return None
-
-def two_pair(ranks):
-    """If there are two pair, return the two ranks as a
-       tuple: (highest, lowest); otherwise return None."""
-    counts = Counter(ranks)
-    pairs = []
-
-    for rank, count in counts.items():
-        if count == 2:
-            pairs.append(rank)
-
-    if len(pairs) == 2:
-        return tuple(sorted(pairs, reverse=True))
-
-    return None
+def unzip(pairs):
+    return zip(*pairs)
