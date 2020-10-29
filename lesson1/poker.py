@@ -1,4 +1,6 @@
 from collections import Counter
+from itertools import combinations
+
 import random
 
 
@@ -54,6 +56,10 @@ def hand_rank(hand):
     flush = len(set([s for r,s in hand])) == 1
 
     return max(COUNT_RANKINGS[counts], 4*straight + 5*flush), ranks
+
+
+def best_hand(hand):
+    return max(combinations(hand, 5), key=hand_rank)
 
 
 def card_ranks(cards):
