@@ -1,10 +1,14 @@
 from collections import Counter
-from itertools import combinations
+from itertools import combinations, product
 
 import random
 
 
 CARD_RANKS = '--23456789TJQKA'
+BLACK_SUITS = 'SC'
+RED_SUITS = 'HD'
+RED_WILDS = [r+s for r in CARD_RANKS[2:] for s in RED_SUITS]
+BLACK_WILDS = [r+s for r in CARD_RANKS[2:] for s in BLACK_SUITS]
 
 COUNT_RANKINGS = {
     (5,): 10,
@@ -59,7 +63,51 @@ def hand_rank(hand):
 
 
 def best_hand(hand):
+    "From a 7-card hand, return the best 5 card hand."
     return max(combinations(hand, 5), key=hand_rank)
+
+
+def best_wild_hand(hand):
+    "Try all values for jokers in all 5-card selections."
+    max_hand, max_hand_score = None, None
+    black_joker, red_joker = False, False
+
+    if '?B' in hand:
+        hand.remove('?B')
+        black_joker = True
+
+    if '?R' in hand:
+        hand.remove('?R')
+        red_joker = True
+
+    if black_joker and red_joker:
+        blacK_red_combinations = product(RED_WILDS, BLACK_WILDS)
+        max_hand, max_hand_score = _best_hand_for_wild(hand, blacK_red_combinations)
+    elif red_joker:
+        max_hand, max_hand_score = _best_hand_for_wild(hand, RED_WILDS)
+    elif black_joker:
+        max_hand, max_hand_score = _best_hand_for_wild(hand, BLACK_WILDS)
+    else:
+        max_hand = max(combinations(hand, 5), key=hand_rank)
+
+    return sorted(max_hand)
+
+
+def _best_hand_for_wild(hand, wilds):
+    max_hand, max_hand_score = None, None
+
+    for combination in wilds:
+        if isinstance(combination, str):
+            cur_high_hand = max(combinations(hand + [combination], 5), key=hand_rank)
+        else:
+            cur_high_hand = max(combinations(hand + list(combination), 5), key=hand_rank)
+
+        cur_hand_score = hand_rank(cur_high_hand)
+        if max_hand_score is None or cur_hand_score > max_hand_score:
+            max_hand_score = cur_hand_score
+            max_hand = cur_high_hand
+
+    return max_hand, max_hand_score
 
 
 def card_ranks(cards):
